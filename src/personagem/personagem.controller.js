@@ -46,7 +46,7 @@ async function deleleById(req,res){
     const deleteResult = await service.deleleById(id)
     
         if(deleteResult.deletedCount === 1){
-        return res.status(201).send({message: 'personagem removido com sucesso'})
+        return res.status(204).send({message: 'personagem removido com sucesso'})
         } else {
             return res.status(400).send({error: 'personagem não encontrado'})
         }
