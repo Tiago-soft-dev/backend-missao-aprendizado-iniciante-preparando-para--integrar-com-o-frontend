@@ -3,7 +3,7 @@ const express=require('express')
 //const { MongoClient, ObjectId } = require('mongodb')
 const { connectToDataBase } = require('./db/database-connection')
 const personagemRouter = require ('./personagem/personagem.router')
-
+const cors = require('cors')
 
 
 async function main(){
@@ -16,6 +16,9 @@ const app=express()
 
 //middlewares
 app.use(express.json()) //express usando json
+app.use(cors())
+
+
 app.use('/personagem', personagemRouter)
 
 app.listen(3000, ()=>console.log('servidor online'))
