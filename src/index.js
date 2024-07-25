@@ -3,6 +3,7 @@ const express=require('express')
 const { connectToDataBase } = require('./db/database-connection')
 const cors = require('cors')
 require('express-async-errors') //biblioteca de tratamento de erros assincronos
+const {ObjectId} = require('mongodb')
 
 
 const personagemRouter = require ('./personagem/personagem.router')
@@ -23,6 +24,8 @@ app.use(function(err,req,res,next){
     console.error(err.stack)
     res.status(500).send({erro: 'Algo deu errado!'})
 })
+
+
 
 //tratamento de erro de rota. Deve ser colocado depois de TODOS endpoints
 app.use('*', (req,res)=>{
