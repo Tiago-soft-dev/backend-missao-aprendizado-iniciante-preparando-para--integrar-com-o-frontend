@@ -1,5 +1,6 @@
 const { Collection } = require("mongodb")
 const service = require('./personagem.service')
+const personagem = require("./personagem.entity")
 
  async function readAll(req,res){
     const personagens =  await service.readAll()
@@ -18,10 +19,10 @@ async function readById(req,res){
 }
 
 async function create(req,res){
-    const novoPersonagem = req.body
+    const {error, value: novoPersonagem} = personagem.validate(req.body)
 
-    if(!novoPersonagem || !novoPersonagem.nome){
-        return res.status(400).send('corpo da requisição inválido')
+    if(error){
+        return res.status(400).send({error: error.details[0].message})
     }
 
     await service.create(novoPersonagem)
@@ -31,11 +32,9 @@ async function create(req,res){
 async function updateById(req,res){
     const id = req.params.id
 
-    const novoPersonagem = req.body
-    
-    if(!novoPersonagem || !novoPersonagem){
-        res.status(400).send('corpo da requisição inválido')
-    }
+    const {error, value: novoPersonagem} = personagem.validate(req.body)
+        if(error){
+            return res.status(400).send({error: error.details[0].message})}
 
     await service.updateById(id, novoPersonagem)
 
@@ -44,8 +43,13 @@ async function updateById(req,res){
 
 async function deleleById(req,res){
     const id = req.params.id
-    await service.deleleById(id)
-    res.status(201).send('personagem removido com sucesso')
+    const deleteResult = await service.deleleById(id)
+    
+        if(deleteResult.deletedCount === 1){
+        return res.status(201).send({message: 'personagem removido com sucesso'})
+        } else {
+            return res.status(400).send({error: 'personagem não encontrado'})
+        }
 }
 
 module.exports = {
